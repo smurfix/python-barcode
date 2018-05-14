@@ -9,15 +9,9 @@ import barcode
 from argparse import ArgumentParser
 
 from barcode.writer import ImageWriter, SVGWriter
-
-# Optional PyQt4 GUI
-try:
-    from PyQt4 import QtCore
-except ImportError:
-    QtCore = None  # lint:ok
+from barcode.version import version
 
 # No GUI available yet
-QtCore = None
 IMG_FORMATS = ('BMP', 'GIF', 'JPEG', 'MSP', 'PCX', 'PNG', 'TIFF', 'XBM')
 
 
@@ -74,15 +68,15 @@ def main():
             'Image output enabled, use --type option to give image '
             'format (png, jpeg, ...).'
         )
-    if QtCore is None:
-        msg.append('PyQt not found, gui action disabled.')
-    else:
-        msg.append('PyQt found. Use gui action to get a simple GUI.')
+#   if QtCore is None:
+#       msg.append('PyQt not found, gui action disabled.')
+#   else:
+#       msg.append('PyQt found. Use gui action to get a simple GUI.')
     parser = ArgumentParser(
-        description=barcode.__description__, epilog=' '.join(msg)
+        description="This program generates 1d barcodes.", epilog=' '.join(msg)
     )
     parser.add_argument('-v', '--version', action='version',
-                        version='%(prog)s ' + barcode.__release__)
+                        version='%(prog)s ' + version)
     subparsers = parser.add_subparsers(title='Actions')
     create_parser = subparsers.add_parser('create', help='Create a barcode '
                                           'with the given options.')
@@ -103,14 +97,19 @@ def main():
     list_parser = subparsers.add_parser('list', help='List available '
                                         'image and code types.')
     list_parser.set_defaults(func=list_types)
-    if QtCore is not None:
-        gui_parser = subparsers.add_parser('gui', help='Opens a simple '
-                                           'PyQt GUI to create barcodes.')
-        gui_parser.set_defaults(func=open_gui)
+#   if QtCore is not None:
+#       gui_parser = subparsers.add_parser('gui', help='Opens a simple '
+#                                          'PyQt GUI to create barcodes.')
+#       gui_parser.set_defaults(func=open_gui)
     create_parser.set_defaults(type='svg', compress=False, func=create_barcode,
                                barcode='code39', text=None)
     args = parser.parse_args()
-    args.func(args, parser)
+    try:
+        func = args.func
+    except AttributeError:
+        parser.error("You need to tell me what to do.")
+    else:
+        func(args, parser)
 
 
 if __name__ == '__main__':
