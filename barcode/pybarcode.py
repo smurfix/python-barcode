@@ -73,7 +73,7 @@ def main():
 #   else:
 #       msg.append('PyQt found. Use gui action to get a simple GUI.')
     parser = ArgumentParser(
-        description="This program generates 1d barcodes.", epilog=' '.join(msg)
+        description='Create standard barcodes via cli.', epilog=' '.join(msg)
     )
     parser.add_argument('-v', '--version', action='version',
                         version='%(prog)s ' + version)
